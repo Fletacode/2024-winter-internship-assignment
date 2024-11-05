@@ -12,11 +12,16 @@ const {
 
 const filePath = "./database/projects.json";
 
+/*
+리턴 양식
+{ message: READERROR, project: null, errorMessage:err }
+*/
+
 async function addDataToFile(inputData) {
     // 입력값 유효성 테스트
     const errorMessage = validateInputProject(inputData);
     if (errorMessage) {
-        return { message: errorMessage, project: null };
+        return { message: errorMessage, project: null, errorMessage: "입력값 유효성 통과 실패" };
     }
 
     try {
@@ -27,7 +32,7 @@ async function addDataToFile(inputData) {
             project = JSON.parse(fileData);
         } catch (err) {
             console.error(READERROR, err);
-            return { message: READERROR, project: null };
+            return { message: READERROR, project: null, errorMessage:err };
         }
 
         // 새 프로젝트 생성 및 추가
@@ -37,7 +42,7 @@ async function addDataToFile(inputData) {
             project.push(newProject);
         } catch (err) {
             console.error(CREATEPROJECTERROR, err);
-            return { message: CREATEPROJECTERROR, project: null };
+            return { message: CREATEPROJECTERROR, project: null,errorMessage:err  };
         }
 
         // 파일 쓰기
@@ -46,11 +51,11 @@ async function addDataToFile(inputData) {
             return { message: "프로젝트 생성 성공", project: project[project.length - 1] };
         } catch (err) {
             console.error(WRITEERROR, err);
-            return { message: WRITEERROR, project: null };
+            return { message: WRITEERROR, project: null, errorMessage:err };
         }
     } catch (err) {
         console.error("Unexpected error:", err);
-        return { message: "Unexpected error occurred", project: null };
+        return { message: "Unexpected error occurred", project: null, errorMessage:err };
     }
 }
 
