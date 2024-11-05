@@ -1,6 +1,5 @@
 const fs = require('fs').promises; // fs 모듈의 Promise 버전을 사용
 
-const { projectFrame } = require('../../model/projectDataFrame.js');
 const {
     GETALLPROJECTERROR
 } = require("../../model/ErrorMessage.js");
