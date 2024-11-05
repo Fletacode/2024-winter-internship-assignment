@@ -6,12 +6,8 @@ const { addDataToFile } = require('../service/project/addProject');
 
 router.post('/', async (req,res) => {
     try{
-        let jsonData = {
-            title : req.body.title,
-            description: req.body.description
-        };
     
-        let resDto = await addDataToFile(jsonData);
+        let resDto = await addDataToFile(req.body);
 
         res.json(resDto);
     }catch (err){
@@ -19,6 +15,14 @@ router.post('/', async (req,res) => {
         res.status(500).json({ message: "프로젝트 생성 실패" });
     }
     
+})
+
+router.get('/', async (req,res) => {
+    try{
+
+    }catch (err){
+
+    }
 })
 
 
