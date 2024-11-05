@@ -14,7 +14,7 @@ async function getAllProjects(){
 
         return {message: "모든 프로젝트 조회 성공", projects: projects};
     } catch(err){
-        return {message: GETALLPROJECTERROR, projects: null};
+        return {message: GETALLPROJECTERROR, projects: null, ErrorMessage: err};
     }   
     
 

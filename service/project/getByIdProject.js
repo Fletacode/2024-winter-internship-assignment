@@ -34,11 +34,11 @@ async function getByIdProject(projectFindId){
         });
 
         if (!validateFilteredProject(filteredProject)){
-            return {message:NOTFOUNDPROJECT, project: null, ErrorMessage:NOTFOUNDPROJECT };
+            return {ErrorMessage:NOTFOUNDPROJECT };
         }
 
     
-        return {message:"프로젝트 조회 성공", project: filteredProject};
+        return {project: filteredProject};
         
     }catch(err){
         return {message:"프로젝트 조회 실패", project: null, ErrorMessage: err};

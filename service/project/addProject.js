@@ -48,7 +48,7 @@ async function addDataToFile(inputData) {
         // 파일 쓰기
         try {
             await fs.writeFile(filePath, JSON.stringify(project, null, 2));
-            return { message: "프로젝트 생성 성공", project: project[project.length - 1] };
+            return {id: project[project.length - 1].id , project: project[project.length - 1] };
         } catch (err) {
             console.error(WRITEERROR, err);
             return { message: WRITEERROR, project: null, errorMessage:err };
