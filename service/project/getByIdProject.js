@@ -4,7 +4,7 @@ const {
     NOTIDNUMBERERROR
 } = require("../../model/ErrorMessage.js");
 
-const { getAllProjects } = require('./getAllProject');
+const { getAllProjects } = require('./getAllProject.js');
 
 /*
 리턴양식
@@ -12,7 +12,7 @@ const { getAllProjects } = require('./getAllProject');
 {message:"프로젝트 조회 실패", project: null, ErrorMessage: err};
 */
 
-async function getProjectById(projectFindId){
+async function getByIdProject(projectFindId){
 
     //입력값 유효성 테스트
     const isValidateInput = validateInput(projectFindId);
@@ -51,7 +51,7 @@ function validateInput(projectId){
         return {message:EMPTYIDERROR, project: null, ErrorMessage:EMPTYIDERROR };
     }
 
-    else if (!Number.isInteger(projectId)){
+    else if (isNaN(parseInt(projectId))){
         return {message:NOTIDNUMBERERROR, project: null, ErrorMessage:NOTIDNUMBERERROR };
     }
 
@@ -69,4 +69,4 @@ function validateFilteredProject(filteredProject){
 }
 
 
-module.exports = {getProjectById};
+module.exports = {getByIdProject};
