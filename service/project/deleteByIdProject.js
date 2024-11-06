@@ -43,9 +43,6 @@ async function deleteByIdProject(projectDelId) {
         //삭제
         const filteredProject = allProjects.projects.filter( (pr) =>{
             if (pr.id !== deletedProject.project[0].id) return pr;
-            else if (pr.id === getProject.project.id){
-                deletedProject = pr;
-            }
         });
 
 
