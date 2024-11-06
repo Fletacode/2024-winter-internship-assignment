@@ -14,44 +14,35 @@ async function editByIdTask(projectId, taskId, reqTask){
     try{
 
         const allProjects = await getAllProjects();
-        if (allProjects?.projects === null){
-            return allProjects;
-        }
 
         //해당 프로젝트 찾고 수정된 데스크 반환
         const findProject = await getByIdProject(projectId);
-        if (findProject.project === null || findProject.ErrorMessage){
-            return findProject;
-        }
 
-        const foundProjectTasks = findProject.project[0].tasks;
+        const foundProjectTasks = findProject.tasks;
         let targetEditTask = foundProjectTasks.find(task => task.id == taskId);
         const editedTask = editOneTask(targetEditTask, reqTask);
 
         
 
         //수정된 테스크, 데스크 배열에 적용
-        findProject.project[0].tasks = editTaskList(foundProjectTasks,editedTask);
+        findProject.tasks = editTaskList(foundProjectTasks,editedTask);
         
         
         //프로젝트 저장
-        const updateProjects = allProjects.projects.map((project)=>{
-            return (project.id == findProject.project[0].id) ? findProject.project[0] : project;
-        })
+        const updateProjects = allProjects.map((project)=>{
+            return (project.id == findProject.id) ? findProject : project;
+        });
 
-
-        
         try {
             await fs.writeFile(filePath, JSON.stringify(updateProjects, null, 2));
-            return {editedTask: editedTask};
+            return editedTask;
         } catch (err) {
-            //console.error(WRITEERROR, err);
-            return { message: WRITEERROR, errorMessage:err };
+            throw err;
         }
         
 
     } catch(err){
-        return { message: WRITEERROR, errorMessage:err };
+        throw err;
     }
 
 }

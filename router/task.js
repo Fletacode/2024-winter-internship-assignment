@@ -33,10 +33,10 @@ router.put('/:projectId/tasks/:taskId', async(req,res)=>{
     try{
         const resEditTask = await editByIdTask(req.params.projectId, req.params.taskId, req.body);
         
-        if (resEditTask?.ErrorMessage === null) return res.status(400).json(resEditTask);
-        return res.json(resEditTask.editedTask);
+      
+        return res.status(200).json(resEditTask);
     }catch(err){
-        res.sendStatus(500).send(err); 
+        res.status(404).send(err); 
     }
 })
 
