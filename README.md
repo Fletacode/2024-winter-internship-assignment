@@ -32,6 +32,75 @@
 - **에러 처리**: 잘못된 요청에 대해 적절한 에러 메시지와 상태 코드를 반환합니다.
 
 
+## API 엔드포인트 설계
+
+### 프로젝트 API
+
+- **POST /projects**: 새 프로젝트 생성
+
+  - 요청: `{ "title": "프로젝트 제목", "description": "프로젝트 설명" }`
+  - 응답: 생성된 프로젝트의 ID와 기본 정보
+
+- **GET /projects**: 모든 프로젝트 조회
+
+  - 응답: 모든 프로젝트 목록
+
+- **GET /projects/:projectId**: 특정 프로젝트 조회
+
+  - 응답: 선택한 프로젝트의 정보와 해당 프로젝트에 속한 태스크 목록
+
+- **DELETE /projects/:projectId**: 특정 프로젝트 삭제 | 단, 태스크가 존재할 경우 삭제 불가 처리(응답 메시지 반환)
+  - 응답: 삭제 성공 여부 메시지
+
+### 태스크 API
+
+- **POST /projects/:projectId/tasks**: 프로젝트에 태스크 추가
+
+  - 요청: `{ "pjId": 1, "title": "태스크 제목", "description": "태스크 설명", "priority": "high", "dueDate": "2024-11-10" }`
+  - 응답: 생성된 태스크의 ID와 기본 정보
+
+- **GET /projects/:projectId/tasks**: 특정 프로젝트의 모든 태스크 조회
+
+  - 응답: 프로젝트 내 모든 태스크 목록
+
+- **PUT /projects/:projectId/tasks/:taskId**: 특정 태스크 수정
+
+  - 요청: `{ "title": "수정된 태스크 제목", "priority": "medium", "dueDate": "2024-11-15", "status": "completed" }`
+  - 응답: 수정된 태스크 정보
+
+- **DELETE /projects/:projectId/tasks/:taskId**: 특정 태스크 삭제
+  - 응답: 삭제 성공 여부 메시지
+
+---
+
+## 데이터 구조
+
+### 프로젝트 데이터 구조
+
+```json
+{
+  "id": "1",
+  "title": "프로젝트 제목",
+  "description": "프로젝트 설명",
+  "tasks": [] // task id list
+}
+```
+
+### 태스크 데이터 구조
+
+```json
+{
+  "pjId": 1, // project id
+  "id": "1",
+  "title": "태스크 제목",
+  "description": "태스크 설명",
+  "priority": "high", // high | medium | low
+  "dueDate": "2024-11-10",
+  "status": "in-progress" // not-started | in-progress | done
+}
+```
+
+
 
 
 
