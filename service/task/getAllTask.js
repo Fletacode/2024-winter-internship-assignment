@@ -7,7 +7,7 @@ async function getAllTasks(projectId){
 
         const findProject = await getByIdProject(projectId);
         
-        return {tasks: findProject.tasks};
+        return findProject.tasks;
     } catch (err){
         return err;
     }
