@@ -10,10 +10,10 @@ router.post('/:projectId/tasks', async (req,res)=>{
     
     try{
         const resAddTask = await addTask(req.body);
-        if (resAddTask?.ErrorMessage !== null) return res.status(400).json(resAddTask);
-        return res.json(resAddTask);
+    
+        return res.status(200).json(resAddTask);
     }catch(err){
-        res.sendStatus(500).send(err);   
+        return res.status(404).send(err);   
     }
 })
 
