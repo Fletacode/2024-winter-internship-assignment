@@ -33,9 +33,6 @@ async function editByIdTask(projectId, taskId, reqTask){
         //수정된 테스크, 데스크 배열에 적용
         findProject.project[0].tasks = editTaskList(foundProjectTasks,editedTask);
         
-        //console.log(findProject);
-        //console.log(allProjects);
-        
         
         //프로젝트 저장
         const updateProjects = allProjects.projects.map((project)=>{
