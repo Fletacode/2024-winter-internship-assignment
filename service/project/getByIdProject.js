@@ -27,7 +27,7 @@ async function getByIdProject(projectFindId){
             throw NOTFOUNDPROJECT;
         }
 
-        return filteredProject;
+        return filteredProject[0];
     }catch(err){
         throw err;
     }
