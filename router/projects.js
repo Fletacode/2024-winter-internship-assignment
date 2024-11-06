@@ -10,11 +10,10 @@ router.post('/', async (req,res) => {
     
         let resDto = await addDataToFile(req.body);
         
-        if (resDto.project === null) return res.status(400).json(resDto);
         return res.json(resDto);
     }catch (err){
-        console.error("프로젝트 생성 실패", err);
-        return res.status(500).json({ message: "프로젝트 생성 실패" });
+        //console.error("프로젝트 생성 실패", err);
+        return res.status(404).send(err);
     }
     
 })

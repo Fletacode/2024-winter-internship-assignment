@@ -7,32 +7,27 @@ const {
     EMPTYINPUTPROJECT, 
     READERROR,
     WRITEERROR,
-    CREATEPROJECTERROR
+    CREATEPROJECTERROR,
+    NOTVALIDATEINPUT
 } = require("../../model/ErrorMessage.js");
 
 const filePath = "./database/projects.json";
 
-/*
-리턴 양식
-{ message: READERROR, project: null, errorMessage:err }
-*/
+const {isEmpty} = require('../../util/isEmpty.js');
 
 async function addDataToFile(inputData) {
-    // 입력값 유효성 테스트
-    const errorMessage = validateInputProject(inputData);
-    if (errorMessage) {
-        return { message: errorMessage, project: null, errorMessage: "입력값 유효성 통과 실패" };
-    }
-
+    
     try {
+        //입력값 유효성 테스트
+        validateInputProject(inputData);
+
         // 파일 읽기
         let project = [];
         try {
             const fileData = await fs.readFile(filePath, 'utf8');
             project = JSON.parse(fileData);
         } catch (err) {
-            console.error(READERROR, err);
-            return { message: READERROR, project: null, errorMessage:err };
+            throw READERROR;
         }
 
         // 새 프로젝트 생성 및 추가
@@ -41,8 +36,7 @@ async function addDataToFile(inputData) {
             const newProject = createProjectFrame(inputData, nowId);
             project.push(newProject);
         } catch (err) {
-            console.error(CREATEPROJECTERROR, err);
-            return { message: CREATEPROJECTERROR, project: null,errorMessage:err  };
+            throw CREATEPROJECTERROR;
         }
 
         // 파일 쓰기
@@ -50,12 +44,10 @@ async function addDataToFile(inputData) {
             await fs.writeFile(filePath, JSON.stringify(project, null, 2));
             return {id: project[project.length - 1].id , project: project[project.length - 1] };
         } catch (err) {
-            console.error(WRITEERROR, err);
-            return { message: WRITEERROR, project: null, errorMessage:err };
+            throw WRITEERROR;
         }
     } catch (err) {
-        console.error("Unexpected error:", err);
-        return { message: "Unexpected error occurred", project: null, errorMessage:err };
+        throw err;
     }
 }
 
@@ -70,16 +62,16 @@ function createProjectFrame(inputProject, nowId) {
 
 // 입력값 유효성 검사 함수
 function validateInputProject(inputProject) {
-    if (!inputProject) {
-        return EMPTYINPUTPROJECT;
+    if (isEmpty(inputProject)) {
+        throw EMPTYINPUTPROJECT;
     }
     if (!inputProject.title) {
-        return EMPTYTITLEMESSAGE;
+        throw EMPTYTITLEMESSAGE;
     }
     if (!inputProject.description) {
-        return EMPTYDESCPTIONMESSAGE;
+        throw EMPTYDESCPTIONMESSAGE;
     }
-    return "";
+    return true;
 }
 
 module.exports = { addDataToFile };
