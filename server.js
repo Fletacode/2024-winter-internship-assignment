@@ -10,6 +10,7 @@ app.use(express.static(path.join(__dirname,'./database')));
 
 
 app.use('/projects', require('./router/projects.js') );
+app.use('/projects', require('./router/task.js') );
 
 
 app.listen(process.env.PORT, () => {
