@@ -5,63 +5,49 @@ const {
 } = require("../../model/ErrorMessage.js");
 
 const { getAllProjects } = require('./getAllProject.js');
+const { isEmpty} = require("../../util/isEmpty.js");
 
-/*
-리턴양식
-{message:"프로젝트 조회 성공", project: filteredProject};
-{message:"프로젝트 조회 실패", project: null, ErrorMessage: err};
-*/
 
 async function getByIdProject(projectFindId){
 
-    //입력값 유효성 테스트
-    const isValidateInput = validateInput(projectFindId);
-    if (isValidateInput?.project === null){
-        return isValidateInput;
-    }
-
     try{
-        
+        //입력 유효성 검사
+        validateInput(projectFindId);
+
+        //모든 프로젝트 조회
         const allProjects = await getAllProjects();
 
-
-        if (allProjects.project === null){
-            return allProjects;
-        }
-
-        const filteredProject = allProjects.projects.filter((pr)=>{
+        //id 값으로 프로젝트 찾기
+        const filteredProject = allProjects.filter((pr)=>{
             if (pr.id == projectFindId) return pr;
         });
 
+        //찾은 결과 예외처리
         if (!validateFilteredProject(filteredProject)){
-            return {ErrorMessage:NOTFOUNDPROJECT };
+            throw NOTFOUNDPROJECT;
         }
 
-    
-        return {project: filteredProject};
-        
+        return filteredProject[0];
     }catch(err){
-        return {message:"프로젝트 조회 실패", project: null, ErrorMessage: err};
+        throw err;
     }
 
 }
 
 function validateInput(projectId){
-    if (!projectId){
-        return {message:EMPTYIDERROR, project: null, ErrorMessage:EMPTYIDERROR };
+    if (isEmpty(projectId)){
+        throw EMPTYIDERROR;
     }
 
     else if (isNaN(parseInt(projectId))){
-        return {message:NOTIDNUMBERERROR, project: null, ErrorMessage:NOTIDNUMBERERROR };
+        throw NOTIDNUMBERERROR;
     }
 
-    return true
+    return true;
 }
 
 function validateFilteredProject(filteredProject){
-    if (!filteredProject){
-        return false;
-    } else if (filteredProject.length == 0){
+    if (isEmpty(filteredProject)){
         return false;
     }
 

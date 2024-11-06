@@ -9,70 +9,62 @@ const {
 
 const { getAllProjects } = require('./getAllProject.js');
 const { getByIdProject} = require('./getByIdProject.js');
+const {isEmpty} = require('../../util/isEmpty.js');
 
 const filePath = "./database/projects.json";
 
 async function deleteByIdProject(projectDelId) {
-
-    //입력값 유효성 테스트
-    const isValidateInput = validateInput(projectDelId);
-    if (isValidateInput?.project === null){
-        return isValidateInput;
-    }
-
     try{
+        //입력값 유효성 검사
+        validateInput(projectDelId);
 
+        //모든 프로젝트 조회
         const allProjects = await getAllProjects();
 
-        if (allProjects?.projects === null){
-            return allProjects;
-        }
-
-    
         const deletedProject = await getByIdProject(projectDelId);
-        
-        if (deletedProject.project === null || deletedProject.ErrorMessage){
-            return deletedProject;
-        }
 
         //테스크가 있다면 삭제 불가
-        if (deletedProject.project[0].tasks.length > 0){
-            return {ErrorMessage : CANNOTDELETEPROJECT};
-        }
+        validateIsTask(deletedProject);
 
         //삭제
-        const filteredProject = allProjects.projects.filter( (pr) =>{
-            if (pr.id !== deletedProject.project[0].id) return pr;
+        const filteredProject = allProjects.filter( (pr) =>{
+            if (pr.id !== deletedProject.id) return pr;
         });
 
 
         // 삭제된 프로젝트 삽입
         try {
             await fs.writeFile(filePath, JSON.stringify(filteredProject, null, 2));
-            return {message:"특정 프로젝트 삭제 성공", project: deletedProject};
+            return projectDelId + "번 특정 프로젝트 삭제 성공";
         } catch (err) {
-            console.error(WRITEERROR, err);
-            return { message: WRITEERROR, project: null, errorMessage:err };
+            throw WRITEERROR;
         }
 
     } catch(err){
-        console.error(err);
-        return {message:"프로젝트 조회 성공", project: null, ErrorMessage: err};
+        throw err;
     }
     
 }
 
 function validateInput(projectId){
    
-    if (!projectId){
-        return {message:EMPTYIDERROR, project: null, ErrorMessage:EMPTYIDERROR };
+    if (isEmpty(projectId)){
+        throw EMPTYIDERROR;
     }
 
     else if (isNaN(parseInt(projectId))){
-        return {message:NOTIDNUMBERERROR, project: null, ErrorMessage:NOTIDNUMBERERROR };
+        throw NOTIDNUMBERERROR;
     }
 
     return true
+}
+
+function validateIsTask(project){
+
+    if (project.tasks.length > 0){
+        throw CANNOTDELETEPROJECT;
+    }
+
 }
 
 

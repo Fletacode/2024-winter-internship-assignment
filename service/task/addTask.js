@@ -14,38 +14,32 @@ async function addTask(inputTask){
 
     try{
 
-        const allProjects = await getAllProjects();
-        if (allProjects?.projects === null){
-            return allProjects;
-        }
+        let allProjects = await getAllProjects();
 
         //테스크 추가할 프로젝트 찾기
         const findProject = await getByIdProject(inputTask.pjId);
-        if (findProject.project === null || findProject.ErrorMessage){
-            return findProject;
-        }
 
         //테스크 생성
-        const createdTask = createTask(findProject.project[0], inputTask);
+        const createdTask = createTask(findProject, inputTask);
 
         //프로젝트에 테스크 추가
-        findProject.project[0].tasks.push(createdTask);
+        findProject.tasks.push(createdTask);
         
         //테스크 추가한 프로젝트 저장
-        allProjects.projects = allProjects.projects.map((project)=>{
-            return (project.id == findProject.project[0].id) ? findProject.project[0] : project;
-        })
+        allProjects = allProjects.map((project)=>{
+            return (project.id == findProject.id) ? findProject : project;
+        });
 
         try {
-            await fs.writeFile(filePath, JSON.stringify(allProjects.projects, null, 2));
-            return {id:  findProject.project[0].id, tasks:  findProject.project[0].tasks};
+            await fs.writeFile(filePath, JSON.stringify(allProjects, null, 2));
+            return {id:  findProject.id, tasks:  findProject.tasks};
         } catch (err) {
-            console.error(WRITEERROR, err);
-            return { message: WRITEERROR, project: null, errorMessage:err };
+            throw WRITEERROR;
         }
 
     }catch(err){
-        return { message: "테스크 추가 실패", errorMessage:"테스크 추가 실패"};
+        console.error(err);
+        throw "테스크 추가 실패";
     }
 
 }
@@ -67,7 +61,6 @@ function createTask(findProject, inputTask){
     }catch(err){
         console.error(err);
     }
-   ;
 
     return tempTask;
 }

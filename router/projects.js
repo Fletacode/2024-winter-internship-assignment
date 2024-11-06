@@ -10,11 +10,9 @@ router.post('/', async (req,res) => {
     
         let resDto = await addDataToFile(req.body);
         
-        if (resDto.project === null) return res.status(400).json(resDto);
         return res.json(resDto);
     }catch (err){
-        console.error("프로젝트 생성 실패", err);
-        return res.status(500).json({ message: "프로젝트 생성 실패" });
+        return res.status(404).send(err);
     }
     
 })
@@ -22,21 +20,19 @@ router.post('/', async (req,res) => {
 router.get('/', async (req,res) => {
     try{
         const allProjects = await getAllProjects();
-        return res.json(allProjects.projects);
+        return res.json(allProjects);
     }catch (err){
-        console.error("모든 프로젝트 조회 실패", err);
-        return res.status(500).json({ message: "모든 프로젝트 조회 실패" });
+        return res.status(404).send(err);
     }
 })
 
 router.get('/:projectId', async (req,res)=>{
     try{
         const projectById = await getByIdProject(req.params.projectId);
-        if (projectById.project === null) return res.status(400).json(projectById);
+    
         return res.json(projectById);
     }catch (err){
-        console.error("특정 프로젝트 조회 실패", err);
-        return res.status(500).json({ message: "특정 프로젝트 조회 실패" });
+        return res.status(404).send(err);
     }
 })
 
@@ -45,11 +41,9 @@ router.delete('/:projectId', async (req,res)=>{
 
         const deletedProject = await deleteByIdProject(req.params.projectId);
 
-        if (deletedProject?.project === null || deletedProject?.ErrorMessage) return res.status(400).json(deletedProject.ErrorMessage);
-        return res.json(deletedProject.message);
+        return res.status(200).send(deletedProject);
     }catch (err){
-        console.error("특정 프로젝트 삭제 실패", err);
-        return res.status(500).json({ message: "특정 프로젝트 삭제 실패" , ErrorMessage: err});
+        return res.status(404).send(err);
     }
 })
 

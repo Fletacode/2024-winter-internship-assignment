@@ -3,14 +3,13 @@ const {getByIdProject} = require("../project/getByIdProject");
 
 async function getAllTasks(projectId){
 
-
     try{
 
         const findProject = await getByIdProject(projectId);
         
-        return {tasks: findProject.project[0].tasks};
+        return findProject.tasks;
     } catch (err){
-        return {tasks: null, ErroMessage:"테스크 조회 실패"};
+        return err;
     }
 
 }
