@@ -12,7 +12,6 @@ router.post('/', async (req,res) => {
         
         return res.json(resDto);
     }catch (err){
-        //console.error("프로젝트 생성 실패", err);
         return res.status(404).send(err);
     }
     
@@ -21,10 +20,9 @@ router.post('/', async (req,res) => {
 router.get('/', async (req,res) => {
     try{
         const allProjects = await getAllProjects();
-        return res.json(allProjects.projects);
+        return res.json(allProjects);
     }catch (err){
-        console.error("모든 프로젝트 조회 실패", err);
-        return res.status(500).json({ message: "모든 프로젝트 조회 실패" });
+        return res.status(404).send(err);
     }
 })
 
