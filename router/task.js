@@ -45,10 +45,9 @@ router.delete('/:projectId/tasks/:taskId', async(req,res)=>{
 
         const resDelteTask = await deleteByIdTask(req.params.projectId, req.params.taskId);
             
-        if (resDelteTask?.ErrorMessage !== null) return res.status(400).json(resDelteTask);
-        return res.json(resDelteTask.message);
+        return res.json(resDelteTask);
     }catch(err){
-        return res.sendStatus(500).send(err); 
+        return res.status(404).send(err); 
     }
 })
 
