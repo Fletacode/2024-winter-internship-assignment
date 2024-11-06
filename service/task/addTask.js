@@ -2,6 +2,7 @@ const fs = require('fs').promises; // fs 모듈의 Promise 버전을 사용
 
 const { taskFrame } = require('../../model/projectDataFrame.js');
 const { getAllProjects } = require('../project/getAllProject.js');
+const {getByIdProject} = require('../project/getByIdProject');
 
 const {
     WRITEERROR,
@@ -13,27 +14,31 @@ async function addTask(inputTask){
 
     try{
 
-        const allProject = await getAllProjects();
+        const allProjects = await getAllProjects();
+        if (allProjects?.projects === null){
+            return allProjects;
+        }
 
         //테스크 추가할 프로젝트 찾기
-        const findProject = allProject.projects.filter((pr)=>{
-            if (pr.id == inputTask.pjId) return pr;
-        })[0];
+        const findProject = await getByIdProject(inputTask.pjId);
+        if (findProject.project === null || findProject.ErrorMessage){
+            return findProject;
+        }
 
         //테스크 생성
-        const createdTask = createTask(findProject, inputTask);
+        const createdTask = createTask(findProject.project[0], inputTask);
 
         //프로젝트에 테스크 추가
-        findProject.tasks.push(createdTask); 
+        findProject.project[0].tasks.push(createdTask);
         
         //테스크 추가한 프로젝트 저장
-        allProject.projects.map(project => 
-            project.id === findProject.id ? findProject : project
-        );
+        allProjects.projects = allProjects.projects.map((project)=>{
+            return (project.id == findProject.project[0].id) ? findProject.project[0] : project;
+        })
 
         try {
-            await fs.writeFile(filePath, JSON.stringify(allProject.projects, null, 2));
-            return {id: findProject.id, tasks: findProject.tasks};
+            await fs.writeFile(filePath, JSON.stringify(allProjects.projects, null, 2));
+            return {id:  findProject.project[0].id, tasks:  findProject.project[0].tasks};
         } catch (err) {
             console.error(WRITEERROR, err);
             return { message: WRITEERROR, project: null, errorMessage:err };
