@@ -3,6 +3,7 @@ const router = express.Router();
 
 const { addTask } = require('../service/task/addTask');
 const {getAllTasks} = require('../service/task/getAllTask');
+const {editByIdTask} = require('../service/task/editByIdTask');
 
 router.post('/:projectId/tasks', async (req,res)=>{
     
@@ -28,6 +29,18 @@ router.get('/:projectId/tasks', async (req,res)=>{
         res.sendStatus(500).send(err); 
     }
 
+})
+
+router.put('/:projectId/tasks/:taskId', async(req,res)=>{
+
+    try{
+        const resEditTask = await editByIdTask(req.params.projectId, req.params.taskId, req.body);
+        
+        if (resEditTask?.ErrorMessage === null) return res.status(400).json(resEditTask);
+        return res.json(resEditTask.editedTask);
+    }catch(err){
+        res.sendStatus(500).send(err); 
+    }
 })
 
 
