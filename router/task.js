@@ -21,13 +21,9 @@ router.get('/:projectId/tasks', async (req,res)=>{
 
     try{
         const resGetAllTask = await getAllTasks(req.params.projectId);
-        
-        console.log(resGetAllTask);
-
-        if (resGetAllTask?.tasks === null) return res.status(400).json(resGetAllTask);
-        return res.json(resGetAllTask.tasks);
+        return res.status(200).json(resGetAllTask);
     }catch (err){
-        res.sendStatus(500).send(err); 
+        res.status(404).send(err); 
     }
 
 })
