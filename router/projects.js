@@ -29,11 +29,10 @@ router.get('/', async (req,res) => {
 router.get('/:projectId', async (req,res)=>{
     try{
         const projectById = await getByIdProject(req.params.projectId);
-        if (projectById.project === null) return res.status(400).json(projectById);
+    
         return res.json(projectById);
     }catch (err){
-        console.error("특정 프로젝트 조회 실패", err);
-        return res.status(500).json({ message: "특정 프로젝트 조회 실패" });
+        return res.status(404).send(err);
     }
 })
 
